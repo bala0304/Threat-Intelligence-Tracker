@@ -33,6 +33,267 @@ st.set_page_config(
     layout="wide"
 )
 
+# ---------------------------------------------------------------------------
+# Visual system (UI-only). Dark, minimal dashboard styling — Vercel/Linear
+# flavour. No behaviour here: only CSS applied to Streamlit's DOM.
+# ---------------------------------------------------------------------------
+st.markdown(
+    """
+    <style>
+      :root {
+        --bg: #0A0A0A;
+        --surface: #141414;
+        --surface-raised: #1C1C1C;
+        --border: #242424;
+        --border-strong: #333333;
+        --text: #EDEDED;
+        --text-muted: #8A8A8A;
+        --accent: #3B82F6;
+        --accent-hover: #60A5FA;
+        --radius-sm: 6px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --ease: 180ms ease;
+      }
+
+      html, body, [class*="css"], .stApp {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, Helvetica, Arial, sans-serif;
+        color: var(--text);
+      }
+      .stApp { background: var(--bg); }
+
+      /* Tighten Streamlit's oversized default padding to an 8px scale */
+      .block-container {
+        padding-top: 2.5rem;
+        padding-bottom: 3rem;
+        max-width: 1400px;
+      }
+
+      /* --- Typography ------------------------------------------------------ */
+      h1, .stMarkdown h1 {
+        font-size: 1.75rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+        margin-bottom: 0.25rem;
+      }
+      h2, .stMarkdown h2 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        margin-top: 0.5rem;
+      }
+      h3, .stMarkdown h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+      }
+      .stMarkdown p, .stMarkdown li { font-size: 0.875rem; line-height: 1.6; }
+      .stCaption, [data-testid="stCaptionContainer"] {
+        color: var(--text-muted) !important;
+        font-size: 0.8rem;
+      }
+
+      /* --- Hairline dividers -------------------------------------------- */
+      hr, [data-testid="stDivider"] {
+        border-color: var(--border) !important;
+        margin: 1.5rem 0 !important;
+      }
+
+      /* --- Metric cards ---------------------------------------------------- */
+      [data-testid="stMetric"] {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 16px 18px;
+        transition: border-color var(--ease), background var(--ease);
+      }
+      [data-testid="stMetric"]:hover { border-color: var(--border-strong); }
+      [data-testid="stMetricLabel"] {
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+      }
+      [data-testid="stMetricValue"] {
+        font-size: 1.5rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+
+      /* --- Buttons ------------------------------------------------------ */
+      .stButton > button {
+        border-radius: var(--radius-md);
+        border: 1px solid var(--border-strong);
+        background: var(--surface-raised);
+        color: var(--text);
+        font-weight: 500;
+        font-size: 0.875rem;
+        padding: 0.45rem 0.9rem;
+        transition: background var(--ease), border-color var(--ease),
+          transform var(--ease);
+      }
+      .stButton > button:hover {
+        border-color: var(--accent);
+        background: #202020;
+      }
+      .stButton > button:active { transform: translateY(1px); }
+      .stButton > button:focus-visible {
+        outline: 2px solid rgba(59, 130, 246, 0.45);
+        outline-offset: 1px;
+      }
+      .stButton > button[kind="primary"],
+      .stButton > button[data-testid="baseButton-primary"] {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #ffffff;
+      }
+      .stButton > button[kind="primary"]:hover,
+      .stButton > button[data-testid="baseButton-primary"]:hover {
+        background: var(--accent-hover);
+        border-color: var(--accent-hover);
+      }
+      .stButton > button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+      /* --- Inputs / selects ---------------------------------------------- */
+      .stTextInput input,
+      .stNumberInput input,
+      .stSelectbox [data-baseweb="select"] > div,
+      .stMultiSelect [data-baseweb="select"] > div {
+        background: var(--surface) !important;
+        border-radius: var(--radius-md) !important;
+        border: 1px solid var(--border) !important;
+        color: var(--text) !important;
+        transition: border-color var(--ease), box-shadow var(--ease);
+      }
+      .stTextInput input:focus,
+      .stNumberInput input:focus,
+      .stSelectbox [data-baseweb="select"] > div:focus-within,
+      .stMultiSelect [data-baseweb="select"] > div:focus-within {
+        border-color: var(--accent) !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+      }
+      .stTextInput input::placeholder { color: #5c5c5c; }
+      .stSlider [data-baseweb="slider"] [role="slider"] { background: var(--accent); }
+
+      /* --- Tabs -------------------------------------------------------- */
+      .stTabs [data-baseweb="tab-list"] {
+        gap: 0.25rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .stTabs [data-baseweb="tab"] {
+        color: var(--text-muted);
+        font-size: 0.875rem;
+        font-weight: 500;
+        padding: 0.5rem 0.75rem;
+        transition: color var(--ease);
+      }
+      .stTabs [data-baseweb="tab"]:hover { color: var(--text); }
+      .stTabs [aria-selected="true"] { color: var(--text) !important; }
+      .stTabs [data-baseweb="tab-highlight"] { background: var(--accent); }
+
+      /* --- Dataframe ------------------------------------------------------ */
+      [data-testid="stDataFrame"], [data-testid="stTable"] {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+      }
+
+      /* --- Expander ----------------------------------------------------- */
+      [data-testid="stExpander"] {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        background: var(--surface);
+      }
+
+      /* --- Callouts (info / warn / error / success) --------------------- */
+      [data-testid="stNotification"], .stAlert {
+        border-radius: var(--radius-md);
+        border: 1px solid var(--border);
+        border-left-width: 3px;
+      }
+
+      /* --- Search hero panel: the first bordered container ------------- */
+      [data-testid="stVerticalBlockBorderWrapper"] {
+        border-radius: var(--radius-lg) !important;
+        border-color: var(--border) !important;
+        background: var(--surface);
+      }
+
+      /* --- App header block ------------------------------------------- */
+      .tit-header { margin-bottom: 0.25rem; }
+      .tit-subtitle {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        margin: 0 0 0.5rem;
+      }
+      .tit-footer {
+        text-align: right;
+        color: var(--text-muted);
+        font-size: 0.78rem;
+      }
+
+      /* --- Responsive ------------------------------------------------- */
+      @media (max-width: 640px) {
+        .block-container { padding-top: 1.5rem; padding-left: 0.75rem;
+          padding-right: 0.75rem; }
+        h1, .stMarkdown h1 { font-size: 1.4rem; }
+        [data-testid="stMetric"] { padding: 12px 14px; }
+        [data-testid="stMetricValue"] { font-size: 1.25rem; }
+      }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# Shared Plotly styling so every chart reads as one system.
+PLOTLY_TEMPLATE = "plotly_dark"
+CATEGORICAL_COLORS = [
+    "#3B82F6", "#8B5CF6", "#06B6D4", "#F59E0B",
+    "#EC4899", "#10B981", "#64748B", "#F43F5E",
+]
+SEVERITY_COLORS = {
+    "critical": "#F43F5E",
+    "high": "#FB923C",
+    "medium": "#FACC15",
+    "low": "#4ADE80",
+    "unknown": "#64748B",
+}
+
+
+def style_fig(fig):
+    """Apply the dark visual system to a Plotly figure (presentation only)."""
+    if fig is None:
+        return None
+    fig.update_layout(
+        template=PLOTLY_TEMPLATE,
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        font=dict(
+            family='Inter, -apple-system, "Segoe UI", Roboto, sans-serif',
+            size=12,
+            color="#8A8A8A",
+        ),
+        title=dict(font=dict(size=14, color="#EDEDED"), x=0, xanchor="left"),
+        margin=dict(l=8, r=8, t=44, b=8),
+        legend=dict(
+            font=dict(size=11, color="#8A8A8A"),
+            bgcolor="rgba(0,0,0,0)",
+        ),
+        colorway=CATEGORICAL_COLORS,
+    )
+    fig.update_xaxes(
+        gridcolor="#1F1F1F", zerolinecolor="#242424",
+        linecolor="#242424", tickfont=dict(color="#8A8A8A"),
+    )
+    fig.update_yaxes(
+        gridcolor="#1F1F1F", zerolinecolor="#242424",
+        linecolor="#242424", tickfont=dict(color="#8A8A8A"),
+    )
+    return fig
+
 # Initialize database connection
 settings = get_settings()
 engine = create_engine(settings.database_url)
@@ -172,9 +433,9 @@ def plot_c2_by_country(df):
         y='Count',
         title='C2 Infrastructure by Country',
         color='Count',
-        color_continuous_scale='Reds'
+        color_continuous_scale=['#1E293B', '#3B82F6']
     )
-    return fig
+    return style_fig(fig)
 
 
 def plot_threats_by_severity(df):
@@ -195,15 +456,9 @@ def plot_threats_by_severity(df):
         y='Count',
         title='Threat Indicators by Severity',
         color='Severity',
-        color_discrete_map={
-            'critical': '#d62728',
-            'high': '#ff7f0e',
-            'medium': '#ffbb78',
-            'low': '#2ca02c',
-            'unknown': '#999999'
-        }
+        color_discrete_map=SEVERITY_COLORS
     )
-    return fig
+    return style_fig(fig)
 
 
 def plot_indicators_by_type(df):
@@ -212,13 +467,13 @@ def plot_indicators_by_type(df):
         return None
 
     type_counts = df.groupby('Type').size().reset_index(name='Count')
-    return px.bar(
+    return style_fig(px.bar(
         type_counts,
         x='Type',
         y='Count',
         title='Threat Indicators by Type',
         color='Type',
-    )
+    ))
 
 
 def run_intelligence_search(query: str, limit: int, shodan_live: bool):
@@ -353,8 +608,15 @@ def render_search_results(local_results, shodan_results, shodan_total, parsed):
 
 
 # Main App
-st.title("🛡️ Threat Intelligence Tracker")
-st.markdown("Live adversary infrastructure monitoring with C2 tracking, pDNS, and threat feed ingestion")
+st.markdown(
+    """
+    <div class="tit-header">
+      <h1>🛡️ Threat Intelligence Tracker</h1>
+      <p class="tit-subtitle">Live adversary infrastructure monitoring — C2 tracking, pDNS, and threat feed ingestion</p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 # Shodan-style global search bar
 with make_container(border=True):
@@ -452,11 +714,11 @@ with tab1:
         with col_chart1:
             fig = plot_threats_by_severity(df_indicators)
             if fig:
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, use_container_width=True, key="overview_severity")
         with col_chart2:
             fig = plot_indicators_by_type(df_indicators)
             if fig:
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, use_container_width=True, key="overview_type")
 
     st.divider()
 
@@ -522,12 +784,12 @@ with tab2:
         with col1:
             fig = plot_c2_by_country(df_c2)
             if fig:
-                st.plotly_chart(fig, use_container_width=True)
-        
+                st.plotly_chart(fig, use_container_width=True, key="c2_by_country")
+
         with col2:
             source_counts = df_c2.groupby('Source').size().reset_index(name='Count')
             fig = px.pie(source_counts, names='Source', values='Count', title='C2 Data Sources')
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(style_fig(fig), use_container_width=True, key="c2_sources")
 
         st.divider()
         enrich_ips = sorted(filtered_df['IP'].unique().tolist())
@@ -593,12 +855,12 @@ with tab3:
         with col1:
             fig = plot_threats_by_severity(df_indicators)
             if fig:
-                st.plotly_chart(fig, use_container_width=True)
-        
+                st.plotly_chart(fig, use_container_width=True, key="indicators_severity")
+
         with col2:
             type_counts = df_indicators.groupby('Type').size().reset_index(name='Count')
             fig = px.bar(type_counts, x='Type', y='Count', title='Indicators by Type')
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(style_fig(fig), use_container_width=True, key="indicators_type")
     else:
         st.info("No threat indicator data available.")
 
@@ -639,13 +901,13 @@ with tab4:
         with col1:
             status_counts = df_urls.groupby('Status').size().reset_index(name='Count')
             fig = px.pie(status_counts, names='Status', values='Count', title='URL Status Distribution')
-            st.plotly_chart(fig, use_container_width=True)
-        
+            st.plotly_chart(style_fig(fig), use_container_width=True, key="urls_status")
+
         with col2:
             malware_counts = df_urls['Malware'].value_counts().head(10).reset_index()
             malware_counts.columns = ['Malware', 'Count']
             fig = px.bar(malware_counts, x='Malware', y='Count', title='Top 10 Malware Families')
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(style_fig(fig), use_container_width=True, key="urls_malware")
     else:
         st.info("No malware URL data available.")
 
@@ -742,4 +1004,7 @@ with tab6:
             st.error(f"Could not load feeds: {str(e)}")
 
 st.divider()
-st.caption(f"Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')}")
+st.markdown(
+    f'<p class="tit-footer">Last updated {datetime.now().strftime("%Y-%m-%d %H:%M:%S")} UTC</p>',
+    unsafe_allow_html=True,
+)
