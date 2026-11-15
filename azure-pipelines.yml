@@ -1,0 +1,66 @@
+# Practice pipeline: Azure DevOps -> Azure Container Registry -> Azure App Service.
+# Replace the REPLACE_ME values before running this pipeline in Azure DevOps.
+# Prerequisites:
+# - An existing Azure Container Registry (ACR).
+# - A Docker Registry service connection pointing to that ACR, with push access.
+# - An Azure Resource Manager service connection with access to the web app.
+# - An existing Linux App Service using classic custom-container mode (no sidecars).
+# - Configure the app's managed identity for ACR pulls and grant it AcrPull
+#   (or the equivalent repository reader role for an ABAC-enabled registry).
+# - Configure runtime secrets/database settings in App Service, not in this file.
+# Task references:
+# https://learn.microsoft.com/azure/devops/pipelines/tasks/reference/docker-v2
+# https://learn.microsoft.com/azure/devops/pipelines/tasks/reference/azure-web-app-container-v1
+
+# Start manually while practicing. Change to a branch trigger when ready.
+trigger: none
+pr: none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  dockerRegistryServiceConnection: 'REPLACE_ME_ACR_SERVICE_CONNECTION'
+  azureServiceConnection: 'REPLACE_ME_AZURE_SERVICE_CONNECTION'
+  containerRegistry: 'REPLACE_ME.azurecr.io'
+  imageRepository: 'threat-intel-tracker'
+  imageTag: '$(Build.BuildId)'
+  webAppName: 'REPLACE_ME_WEB_APP_NAME'
+
+stages:
+  - stage: Build
+    displayName: Build and push Docker image
+    jobs:
+      - job: BuildImage
+        steps:
+          - checkout: self
+
+          - task: Docker@2
+            displayName: Build image and push to ACR
+            inputs:
+              command: buildAndPush
+              containerRegistry: '$(dockerRegistryServiceConnection)'
+              repository: '$(imageRepository)'
+              Dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
+              buildContext: '$(Build.SourcesDirectory)'
+              tags: |
+                $(imageTag)
+
+  - stage: Deploy
+    displayName: Deploy to Azure App Service
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+      - job: DeployContainer
+        steps:
+          - checkout: none
+
+          - task: AzureWebAppContainer@1
+            displayName: Deploy the image built in this run
+            inputs:
+              azureSubscription: '$(azureServiceConnection)'
+              appName: '$(webAppName)'
+              containers: '$(containerRegistry)/$(imageRepository):$(imageTag)'
+              # Streamlit listens on port 8501 in this repository's image.
+              appSettings: '-WEBSITES_PORT 8501'
+
