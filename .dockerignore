@@ -1,0 +1,22 @@
+# Include only the files needed by the image.
+**
+!Dockerfile
+!.dockerignore
+!requirements.txt
+!main.py
+!src/
+!src/**
+!dashboard/
+!dashboard/**
+!.streamlit/
+!.streamlit/config.toml
+
+# Exclude generated files and secrets even inside included directories.
+**/__pycache__/
+**/*.py[cod]
+**/.env
+**/.env.*
+**/secrets.toml
+**/*.db
+**/*.sqlite
+**/*.sqlite3

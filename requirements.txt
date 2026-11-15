@@ -15,6 +15,9 @@ dnspython==2.4.2
 whois==0.9.7
 plotly==5.17.0
 streamlit==1.28.1
+# Keep Streamlit's NumPy 1.x dependency compatible with PyArrow.
+numpy==1.26.4
+pyarrow==18.0.0
 streamlit-option-menu==0.3.6
 python-dateutil==2.8.2
 cryptography==41.0.7
