@@ -24,7 +24,7 @@ steps:
   displayName: Build an image
   inputs:
     containerregistrytype: 'Azure Container Registry'
-    azureSubscription: 'bala'
+    azureSubscriptionEndpoint: 'bala'
     azureContainerRegistry: '{"loginServer":"skillitacr20261109.azurecr.io","id":"/subscriptions/64c1a95b-eafc-4376-936a-eb697b18a0c7/resourceGroups/RG-ACR/providers/Microsoft.ContainerRegistry/registries/skillitacr20261109"}'
     dockerFile: 'Dockerfile'
     imageName: 'bala-python-yaml:$(Build.BuildId)'
@@ -35,7 +35,7 @@ steps:
   displayName: Push an image
   inputs:
     containerregistrytype: 'Azure Container Registry'
-    azureSubscription: 'bala'
+    azureSubscriptionEndpoint: 'bala'
     azureContainerRegistry: '{"loginServer":"skillitacr20261109.azurecr.io","id":"/subscriptions/64c1a95b-eafc-4376-936a-eb697b18a0c7/resourceGroups/RG-ACR/providers/Microsoft.ContainerRegistry/registries/skillitacr20261109"}'
     dockerFile: 'Dockerfile'
     imageName: 'bala-python-yaml:$(Build.BuildId)'
