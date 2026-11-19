@@ -19,48 +19,23 @@ pr: none
 pool:
   vmImage: ubuntu-latest
 
-variables:
-  dockerRegistryServiceConnection: 'REPLACE_ME_ACR_SERVICE_CONNECTION'
-  azureServiceConnection: 'REPLACE_ME_AZURE_SERVICE_CONNECTION'
-  containerRegistry: 'REPLACE_ME.azurecr.io'
-  imageRepository: 'threat-intel-tracker'
-  imageTag: '$(Build.BuildId)'
-  webAppName: 'REPLACE_ME_WEB_APP_NAME'
+steps:
+- task: DockerCompose@1
+  displayName: Build services
+  inputs:
+    containerregistrytype: 'Azure Container Registry'
+    azureSubscription: 'bala'
+    azureContainerRegistry: '{"loginServer":"skillitacr20261109.azurecr.io","id":"/subscriptions/64c1a95b-eafc-4376-936a-eb697b18a0c7/resourceGroups/RG-ACR/providers/Microsoft.ContainerRegistry/registries/skillitacr20261109"}'
+    dockerComposeFile: '**/docker-compose.yml'
+    action: 'Build services'
+    additionalImageTags: '$(Build.BuildId)'
 
-stages:
-  - stage: Build
-    displayName: Build and push Docker image
-    jobs:
-      - job: BuildImage
-        steps:
-          - checkout: self
-
-          - task: Docker@2
-            displayName: Build image and push to ACR
-            inputs:
-              command: buildAndPush
-              containerRegistry: '$(dockerRegistryServiceConnection)'
-              repository: '$(imageRepository)'
-              Dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
-              buildContext: '$(Build.SourcesDirectory)'
-              tags: |
-                $(imageTag)
-
-  - stage: Deploy
-    displayName: Deploy to Azure App Service
-    dependsOn: Build
-    condition: succeeded()
-    jobs:
-      - job: DeployContainer
-        steps:
-          - checkout: none
-
-          - task: AzureWebAppContainer@1
-            displayName: Deploy the image built in this run
-            inputs:
-              azureSubscription: '$(azureServiceConnection)'
-              appName: '$(webAppName)'
-              containers: '$(containerRegistry)/$(imageRepository):$(imageTag)'
-              # Streamlit listens on port 8501 in this repository's image.
-              appSettings: '-WEBSITES_PORT 8501'
-
+- task: DockerCompose@1
+  displayName: Push services
+  inputs:
+    containerregistrytype: 'Azure Container Registry'
+    azureSubscription: 'bala'
+    azureContainerRegistry: '{"loginServer":"skillitacr20261109.azurecr.io","id":"/subscriptions/64c1a95b-eafc-4376-936a-eb697b18a0c7/resourceGroups/RG-ACR/providers/Microsoft.ContainerRegistry/registries/skillitacr20261109"}'
+    dockerComposeFile: '**/docker-compose.yml'
+    action: 'Push services'
+    additionalImageTags: '$(Build.BuildId)'
