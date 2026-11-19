@@ -27,6 +27,7 @@ steps:
     azureSubscription: 'bala'
     azureContainerRegistry: '{"loginServer":"skillitacr20261109.azurecr.io","id":"/subscriptions/64c1a95b-eafc-4376-936a-eb697b18a0c7/resourceGroups/RG-ACR/providers/Microsoft.ContainerRegistry/registries/skillitacr20261109"}'
     dockerComposeFile: '**/docker-compose.yml'
+    projectName: 'bala-threat-intelligence-tracker'
     action: 'Build services'
     additionalImageTags: '$(Build.BuildId)'
 
@@ -37,5 +38,6 @@ steps:
     azureSubscription: 'bala'
     azureContainerRegistry: '{"loginServer":"skillitacr20261109.azurecr.io","id":"/subscriptions/64c1a95b-eafc-4376-936a-eb697b18a0c7/resourceGroups/RG-ACR/providers/Microsoft.ContainerRegistry/registries/skillitacr20261109"}'
     dockerComposeFile: '**/docker-compose.yml'
+    projectName: 'bala-threat-intelligence-tracker'
     action: 'Push services'
     additionalImageTags: '$(Build.BuildId)'
