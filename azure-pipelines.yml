@@ -20,24 +20,24 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- task: DockerCompose@1
-  displayName: Build services
+- task: Docker@1
+  displayName: Build an image
   inputs:
     containerregistrytype: 'Azure Container Registry'
     azureSubscription: 'bala'
     azureContainerRegistry: '{"loginServer":"skillitacr20261109.azurecr.io","id":"/subscriptions/64c1a95b-eafc-4376-936a-eb697b18a0c7/resourceGroups/RG-ACR/providers/Microsoft.ContainerRegistry/registries/skillitacr20261109"}'
-    dockerComposeFile: '**/docker-compose.yml'
-    projectName: 'bala-threat-intelligence-tracker'
-    action: 'Build services'
+    dockerFile: 'Dockerfile'
+    imageName: 'bala-python-yaml:$(Build.BuildId)'
+    command: 'Build an image'
     additionalImageTags: '$(Build.BuildId)'
 
-- task: DockerCompose@1
-  displayName: Push services
+- task: Docker@1
+  displayName: Push an image
   inputs:
     containerregistrytype: 'Azure Container Registry'
     azureSubscription: 'bala'
     azureContainerRegistry: '{"loginServer":"skillitacr20261109.azurecr.io","id":"/subscriptions/64c1a95b-eafc-4376-936a-eb697b18a0c7/resourceGroups/RG-ACR/providers/Microsoft.ContainerRegistry/registries/skillitacr20261109"}'
-    dockerComposeFile: '**/docker-compose.yml'
-    projectName: 'bala-threat-intelligence-tracker'
-    action: 'Push services'
+    dockerFile: 'Dockerfile'
+    imageName: 'bala-python-yaml:$(Build.BuildId)'
+    command: 'Push an image'
     additionalImageTags: '$(Build.BuildId)'
