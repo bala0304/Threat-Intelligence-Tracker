@@ -1,0 +1,12 @@
+
+steps:
+- task: Docker@1
+  displayName: 'Push Threat Intelligence Tracker image'
+  inputs:
+    containerregistrytype: 'Azure Container Registry'
+    azureSubscriptionEndpoint: 'bala'
+    azureContainerRegistry: '{"loginServer":"skillitacr20261109.azurecr.io","id":"/subscriptions/64c1a95b-eafc-4376-936a-eb697b18a0c7/resourceGroups/RG-ACR/providers/Microsoft.ContainerRegistry/registries/skillitacr20261109"}'
+    dockerFile: 'Dockerfile'
+    imageName: 'bala-python-yaml:$(Build.BuildId)'
+    command: 'Push an image'
+    additionalImageTags: '$(Build.BuildId)'
