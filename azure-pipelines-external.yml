@@ -1,0 +1,20 @@
+
+trigger: none
+pr: none
+
+resources:
+  repositories:
+    - repository: trackerTemplates
+      type: git
+      name: B-Pipeline-Templates
+      ref: refs/heads/main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- checkout: self
+
+- template: ThreatIntelTracker/python-build.yml@trackerTemplates
+
+- template: ThreatIntelTracker/python-test.yml@trackerTemplates
