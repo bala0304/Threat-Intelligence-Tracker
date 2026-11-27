@@ -1,0 +1,41 @@
+
+trigger: none
+pr: none
+
+stages:
+- stage: Build
+  displayName: Build Docker Image
+  jobs:
+  - job: BuildJob
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - task: Docker@1
+      displayName: Build an image
+      inputs:
+        containerregistrytype: 'Azure Container Registry'
+        azureSubscriptionEndpoint: 'bala'
+        azureContainerRegistry: '{"loginServer":"skillitacr20261109.azurecr.io","id":"/subscriptions/64c1a95b-eafc-4376-936a-eb697b18a0c7/resourceGroups/RG-ACR/providers/Microsoft.ContainerRegistry/registries/skillitacr20261109"}'
+        dockerFile: 'Dockerfile'
+        imageName: 'bala-python-yaml:$(Build.BuildId)'
+        command: 'Build an image'
+        additionalImageTags: '$(Build.BuildId)'
+
+- stage: Push
+  displayName: Push Docker Image
+  dependsOn: Build
+  jobs:
+  - job: PushJob
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - task: Docker@1
+      displayName: Push an image
+      inputs:
+        containerregistrytype: 'Azure Container Registry'
+        azureSubscriptionEndpoint: 'bala'
+        azureContainerRegistry: '{"loginServer":"skillitacr20261109.azurecr.io","id":"/subscriptions/64c1a95b-eafc-4376-936a-eb697b18a0c7/resourceGroups/RG-ACR/providers/Microsoft.ContainerRegistry/registries/skillitacr20261109"}'
+        dockerFile: 'Dockerfile'
+        imageName: 'bala-python-yaml:$(Build.BuildId)'
+        command: 'Push an image'
+        additionalImageTags: '$(Build.BuildId)'
