@@ -1,4 +1,5 @@
 
+
 trigger: none
 pr: none
 
@@ -21,6 +22,16 @@ stages:
         command: 'Build an image'
         additionalImageTags: '$(Build.BuildId)'
 
+    - script: |
+        docker save skillitacr20261109.azurecr.io/bala-python-yaml:$(Build.BuildId) -o $(Build.ArtifactStagingDirectory)/tracker-image.tar
+      displayName: Save Docker Image
+
+    - task: PublishPipelineArtifact@1
+      displayName: Publish Docker Image Artifact
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)'
+        artifact: 'docker-image'
+
 - stage: Push
   displayName: Push Docker Image
   dependsOn: Build
@@ -29,6 +40,17 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
+    - task: DownloadPipelineArtifact@2
+      displayName: Download Docker Image Artifact
+      inputs:
+        buildType: 'current'
+        artifactName: 'docker-image'
+        targetPath: '$(Pipeline.Workspace)/docker-image'
+
+    - script: |
+        docker load -i $(Pipeline.Workspace)/docker-image/tracker-image.tar
+      displayName: Load Docker Image
+
     - task: Docker@1
       displayName: Push an image
       inputs:
@@ -39,3 +61,4 @@ stages:
         imageName: 'bala-python-yaml:$(Build.BuildId)'
         command: 'Push an image'
         additionalImageTags: '$(Build.BuildId)'
+
