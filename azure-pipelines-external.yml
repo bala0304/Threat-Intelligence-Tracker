@@ -15,6 +15,6 @@ pool:
 steps:
 - checkout: self
 
-- template: ThreatIntelTracker/python-build.yml@trackerTemplates
+- template: Threat-intel-tracker/python-build.yml@trackerTemplates
 
-- template: ThreatIntelTracker/python-test.yml@trackerTemplates
+- template: Threat-intel-tracker/python-test.yml@trackerTemplates
