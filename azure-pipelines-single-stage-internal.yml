@@ -1,0 +1,19 @@
+
+trigger: none
+pr: none
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+- stage: BuildAndPush
+  displayName: 'Single Stage - Build and Push'
+  jobs:
+  - job: DockerBuildPush
+    displayName: 'Build and Push Threat Intelligence Tracker'
+    steps:
+    - checkout: self
+
+    - template: Templates/docker-build.yml
+
+    - template: Templates/docker-push.yml
